@@ -28,6 +28,40 @@ def check_bound(rct: pg.Rect)-> tuple[bool, bool]:  #練習問題3
     return yoko, tate  #練習問題3
 
 
+def gameover(screen: pg.Surface) -> None:  # 演習問題1
+    # 1. 黒い矩形を描画するための空のSurfaceを作り，黒い矩形を描画する
+    black_surf = pg.Surface((WIDTH, HEIGHT))
+    black_surf.fill((0, 0, 0))
+    # 2. 1のSurfaceの透明度を設定する
+    black_surf.set_alpha(200)
+    # 3. 白文字でGame Overと書かれたフォントSurfaceを作り，1のSurfaceにblitする
+    fonto = pg.font.Font(None, 100)
+    txt = fonto.render("Game Over", True, (255, 255, 255))
+    txt_rct = txt.get_rect()
+    # 4. こうかとん画像をロードし，こうかとんSurfaceを作り，1のSurfaceにblitする
+    cry_img = pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 1.0)
+    cry_rct = cry_img.get_rect()
+    # 文字とこうかとんを左右中央に配置するコード
+    total_width = cry_rct.width + 100 + txt_rct.width + 100 + cry_rct.width
+    start_x = (WIDTH - total_width) // 2
+    center_y = HEIGHT // 2
+    left_x = start_x
+    left_y = center_y - cry_rct.height // 2
+    black_surf.blit(cry_img, (left_x, left_y))
+    txt_x = left_x + cry_rct.width + 100
+    txt_y = center_y - txt_rct.height // 2
+    black_surf.blit(txt, (txt_x, txt_y))
+    right_x = txt_x + txt_rct.width + 100
+    right_y = center_y - cry_rct.height // 2
+    black_surf.blit(cry_img, (right_x, right_y))
+    # 5. 1のSurfaceをscreen Surfaceにblitする
+    screen.blit(black_surf, (0, 0))
+    # 6. pg.display.update()したら，time.sleep(5)する
+    pg.display.update()
+    pg.time.wait(5000)
+
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -49,9 +83,14 @@ def main():
             if event.type == pg.QUIT: 
                 return
             
-        if kk_rct.colliderect(bb_rct):  #練習問題4 こうかとんと爆弾が衝突したら
-            print("ゲームオーバー")  #練習問題4
-            return  #練習問題4
+        # if kk_rct.colliderect(bb_rct):  #練習問題4 こうかとんと爆弾が衝突したら
+        #     print("ゲームオーバー")  #練習問題4
+        #     return  #練習問題4
+        
+        if kk_rct.colliderect(bb_rct):  #演習課題1
+            gameover(screen)  #演習課題1
+            return  #演習課題1
+
         
         screen.blit(bg_img, [0, 0]) 
         
