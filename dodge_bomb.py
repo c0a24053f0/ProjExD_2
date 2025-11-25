@@ -14,6 +14,20 @@ DELTA = {  #練習問題1
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
+def check_bound(rct: pg.Rect)-> tuple[bool, bool]:  #練習問題3
+    """
+    引数：こうかとんRectかばくだんRect
+    戻り値：判定結果タプル（横方向の判定結果，縦方向の判定結果）
+    画面内ならTrue，画面外ならFalse
+    """
+    yoko, tate = True, True
+    if rct.left < 0 or WIDTH < rct.right:  #練習問題3  横方向のはみ出しチェック
+        yoko = False  #練習問題3
+    if rct.top < 0 or HEIGHT < rct.bottom:  #練習問題3  縦方向のはみ出しチェック
+        tate = False  #練習問題3
+    return yoko, tate  #練習問題3
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -50,7 +64,14 @@ def main():
                 sum_mv[0] += mv[0]  #練習問題1　横方向の移動量
                 sum_mv[1] += mv[1]  #練習問題1　横方向の移動量
         kk_rct.move_ip(sum_mv)
+        if check_bound(kk_rct) != (True, True):  #練習問題2  画面外なら
+            kk_rct.move_ip(-sum_mv[0], -sum_mv[1])  #練習問題2  移動しなかったことにする
         screen.blit(kk_img, kk_rct)  #練習問題2
+        yoko, tate = check_bound(bb_rct)  #練習問題3
+        if not yoko:  #練習問題3
+            vx *= -1  #練習問題3
+        if not tate:  #練習問題3
+            vy *= -1  #練習問題3
         bb_rct.move_ip(vx, vy)  #練習問題2
         screen.blit(bb_img, bb_rct)  #練習問題2
         pg.display.update()
